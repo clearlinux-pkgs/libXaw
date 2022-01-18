@@ -6,7 +6,7 @@
 #
 Name     : libXaw
 Version  : 1.0.14
-Release  : 7
+Release  : 8
 URL      : https://www.x.org/releases/individual/lib/libXaw-1.0.14.tar.bz2
 Source0  : https://www.x.org/releases/individual/lib/libXaw-1.0.14.tar.bz2
 Source1  : https://www.x.org/releases/individual/lib/libXaw-1.0.14.tar.bz2.sig
@@ -15,10 +15,7 @@ Group    : Development/Tools
 License  : ICU MIT-Opengroup NTP
 Requires: libXaw-lib = %{version}-%{release}
 Requires: libXaw-license = %{version}-%{release}
-BuildRequires : libXpm-dev32
 BuildRequires : libxslt-bin
-BuildRequires : pkg-config
-BuildRequires : pkgconfig(32xorg-macros)
 BuildRequires : pkgconfig(x11)
 BuildRequires : pkgconfig(xext)
 BuildRequires : pkgconfig(xextproto)
@@ -78,7 +75,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1642546048
+export SOURCE_DATE_EPOCH=1642546414
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -98,7 +95,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1642546048
+export SOURCE_DATE_EPOCH=1642546414
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libXaw
 cp %{_builddir}/libXaw-1.0.14/COPYING %{buildroot}/usr/share/package-licenses/libXaw/715a897b37b8e535c5812e5f4e663c30b5a67115
