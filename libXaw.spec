@@ -6,7 +6,7 @@
 #
 Name     : libXaw
 Version  : 1.0.14
-Release  : 8
+Release  : 9
 URL      : https://www.x.org/releases/individual/lib/libXaw-1.0.14.tar.bz2
 Source0  : https://www.x.org/releases/individual/lib/libXaw-1.0.14.tar.bz2
 Source1  : https://www.x.org/releases/individual/lib/libXaw-1.0.14.tar.bz2.sig
@@ -15,7 +15,21 @@ Group    : Development/Tools
 License  : ICU MIT-Opengroup NTP
 Requires: libXaw-lib = %{version}-%{release}
 Requires: libXaw-license = %{version}-%{release}
+BuildRequires : gcc-dev32
+BuildRequires : gcc-libgcc32
+BuildRequires : gcc-libstdc++32
+BuildRequires : glibc-dev32
+BuildRequires : glibc-libc32
+BuildRequires : libXpm-dev32
 BuildRequires : libxslt-bin
+BuildRequires : pkg-config
+BuildRequires : pkgconfig(32x11)
+BuildRequires : pkgconfig(32xext)
+BuildRequires : pkgconfig(32xextproto)
+BuildRequires : pkgconfig(32xmu)
+BuildRequires : pkgconfig(32xpm)
+BuildRequires : pkgconfig(32xproto)
+BuildRequires : pkgconfig(32xt)
 BuildRequires : pkgconfig(x11)
 BuildRequires : pkgconfig(xext)
 BuildRequires : pkgconfig(xextproto)
@@ -41,6 +55,16 @@ Requires: libXaw = %{version}-%{release}
 dev components for the libXaw package.
 
 
+%package dev32
+Summary: dev32 components for the libXaw package.
+Group: Default
+Requires: libXaw-lib32 = %{version}-%{release}
+Requires: libXaw-dev = %{version}-%{release}
+
+%description dev32
+dev32 components for the libXaw package.
+
+
 %package doc
 Summary: doc components for the libXaw package.
 Group: Documentation
@@ -58,6 +82,15 @@ Requires: libXaw-license = %{version}-%{release}
 lib components for the libXaw package.
 
 
+%package lib32
+Summary: lib32 components for the libXaw package.
+Group: Default
+Requires: libXaw-license = %{version}-%{release}
+
+%description lib32
+lib32 components for the libXaw package.
+
+
 %package license
 Summary: license components for the libXaw package.
 Group: Default
@@ -69,13 +102,16 @@ license components for the libXaw package.
 %prep
 %setup -q -n libXaw-1.0.14
 cd %{_builddir}/libXaw-1.0.14
+pushd ..
+cp -a libXaw-1.0.14 build32
+popd
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1642546414
+export SOURCE_DATE_EPOCH=1648078750
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -87,18 +123,44 @@ export CXXFLAGS="$CXXFLAGS -O3 -Os -fdata-sections -ffat-lto-objects -ffunction-
 %configure --disable-static
 make  %{?_smp_mflags}
 
+pushd ../build32/
+export PKG_CONFIG_PATH="/usr/lib32/pkgconfig:/usr/share/pkgconfig"
+export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
+export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
+export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
+export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
+%configure --disable-static    --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
+make  %{?_smp_mflags}
+popd
 %check
 export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make %{?_smp_mflags} check
+cd ../build32;
+make %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1642546414
+export SOURCE_DATE_EPOCH=1648078750
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libXaw
 cp %{_builddir}/libXaw-1.0.14/COPYING %{buildroot}/usr/share/package-licenses/libXaw/715a897b37b8e535c5812e5f4e663c30b5a67115
+pushd ../build32/
+%make_install32
+if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
+then
+pushd %{buildroot}/usr/lib32/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
+popd
+fi
+if [ -d %{buildroot}/usr/share/pkgconfig ]
+then
+pushd %{buildroot}/usr/share/pkgconfig
+for i in *.pc ; do ln -s $i 32$i ; done
+popd
+fi
+popd
 %make_install
 
 %files
@@ -184,6 +246,16 @@ cp %{_builddir}/libXaw-1.0.14/COPYING %{buildroot}/usr/share/package-licenses/li
 /usr/lib64/pkgconfig/xaw7.pc
 /usr/share/man/man3/Xaw.3
 
+%files dev32
+%defattr(-,root,root,-)
+/usr/lib32/libXaw.so
+/usr/lib32/libXaw6.so
+/usr/lib32/libXaw7.so
+/usr/lib32/pkgconfig/32xaw6.pc
+/usr/lib32/pkgconfig/32xaw7.pc
+/usr/lib32/pkgconfig/xaw6.pc
+/usr/lib32/pkgconfig/xaw7.pc
+
 %files doc
 %defattr(0644,root,root,0755)
 %doc /usr/share/doc/libXaw/*
@@ -196,6 +268,15 @@ cp %{_builddir}/libXaw-1.0.14/COPYING %{buildroot}/usr/share/package-licenses/li
 /usr/lib64/libXaw6.so.6.0.1
 /usr/lib64/libXaw7.so.7
 /usr/lib64/libXaw7.so.7.0.0
+
+%files lib32
+%defattr(-,root,root,-)
+/usr/lib32/libXaw.so.6
+/usr/lib32/libXaw.so.7
+/usr/lib32/libXaw6.so.6
+/usr/lib32/libXaw6.so.6.0.1
+/usr/lib32/libXaw7.so.7
+/usr/lib32/libXaw7.so.7.0.0
 
 %files license
 %defattr(0644,root,root,0755)
