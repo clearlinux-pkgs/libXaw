@@ -6,7 +6,7 @@
 #
 Name     : libXaw
 Version  : 1.0.14
-Release  : 10
+Release  : 11
 URL      : https://www.x.org/releases/individual/lib/libXaw-1.0.14.tar.bz2
 Source0  : https://www.x.org/releases/individual/lib/libXaw-1.0.14.tar.bz2
 Source1  : https://www.x.org/releases/individual/lib/libXaw-1.0.14.tar.bz2.sig
@@ -39,6 +39,9 @@ BuildRequires : pkgconfig(xpm)
 BuildRequires : pkgconfig(xproto)
 BuildRequires : pkgconfig(xt)
 BuildRequires : xmlto
+# Suppress stripping binaries
+%define __strip /bin/true
+%define debug_package %{nil}
 
 %description
 Xaw is the X Athena Widget Set.
@@ -111,15 +114,15 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1664931119
+export SOURCE_DATE_EPOCH=1672246991
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -Os -fdata-sections -ffat-lto-objects -ffunction-sections -flto=auto -fno-semantic-interposition "
-export FCFLAGS="$FFLAGS -O3 -Os -fdata-sections -ffat-lto-objects -ffunction-sections -flto=auto -fno-semantic-interposition "
-export FFLAGS="$FFLAGS -O3 -Os -fdata-sections -ffat-lto-objects -ffunction-sections -flto=auto -fno-semantic-interposition "
-export CXXFLAGS="$CXXFLAGS -O3 -Os -fdata-sections -ffat-lto-objects -ffunction-sections -flto=auto -fno-semantic-interposition "
+export CFLAGS="$CFLAGS -O3 -Os -fdata-sections -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -ffunction-sections -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz "
+export FCFLAGS="$FFLAGS -O3 -Os -fdata-sections -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -ffunction-sections -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz "
+export FFLAGS="$FFLAGS -O3 -Os -fdata-sections -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -ffunction-sections -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz "
+export CXXFLAGS="$CXXFLAGS -O3 -Os -fdata-sections -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -ffunction-sections -flto=auto -fno-semantic-interposition -g1 -gno-column-info -gno-variable-location-views -gz "
 %configure --disable-static
 make  %{?_smp_mflags}
 
@@ -142,10 +145,10 @@ cd ../build32;
 make %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1664931119
+export SOURCE_DATE_EPOCH=1672246991
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libXaw
-cp %{_builddir}/libXaw-%{version}/COPYING %{buildroot}/usr/share/package-licenses/libXaw/715a897b37b8e535c5812e5f4e663c30b5a67115 || :
+cp %{_builddir}/libXaw-%{version}/COPYING %{buildroot}/usr/share/package-licenses/libXaw/715a897b37b8e535c5812e5f4e663c30b5a67115
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
