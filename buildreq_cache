@@ -1,5 +1,6 @@
-1.0.14
+1.0.15
 libxslt-bin
 pkg-config
+pkgconfig(32xorg-macros)
 pkgconfig(xorg-macros)
 xmlto
