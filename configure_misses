@@ -1,6 +1,12 @@
 Configure miss: gcc options needed to detect all undeclared functions
 Configure miss: gcc options needed to detect all undeclared functions
+Configure miss: gcc options needed to detect all undeclared functions
 Configure miss: i686-generic-linux-gnu-file
+Configure miss: whether to build unit test cases
+Configure miss: whether to build unit test cases
+Configure miss: whether to build unit test cases
 Configure miss: widec.h
 Configure miss: widec.h
+Configure miss: widec.h
+Configure miss: x86_64-generic-linux-gnu-file
 Configure miss: x86_64-generic-linux-gnu-file
